@@ -44,7 +44,8 @@ module BinaryBuilder
       'python' => PythonArchitect,
       'httpd'  => HttpdArchitect,
       'php'    => PHPArchitect,
-      'nginx'  => NginxArchitect
+      'nginx'  => NginxArchitect,
+      'hhvm'   => HHVMArchitect
     }
 
     def architect_for_binary(binary)

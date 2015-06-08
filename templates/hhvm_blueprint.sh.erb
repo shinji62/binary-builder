@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+##################################################################
+#
+# Script to build HHVM for use with CloudFoundry
+#
+#   Author:  Daniel Mikusa
+#     Date:  3-3-2015
+#
+##################################################################
+#  Configuration
+#
+
+set -o pipefail
+set -eux
+
+
+HHVM_VERSION=<%= binary_version %>
+INSTALLATION_DIR=$1
+HHVM_DIR=$INSTALLATION_DIR/hhvm-$HHVM_VERSION-cflinuxfs2
+mkdir -p $HHVM_DIR
+
+<% debian_dependency_urls.each do |dependency_url| %>
+  wget -nv <%= dependency_url %>
+  dpkg -x $(basename <%= dependency_url %>) $HHVM_DIR
+<% end %>
+
+echo -e "\n -----> Done. \n "

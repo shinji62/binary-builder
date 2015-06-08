@@ -109,4 +109,21 @@ describe 'building a binary', :integration do
       FileUtils.rm(binary_tarball_location)
     end
   end
+
+  context 'when hhvm is specified', binary: 'hhvm' do
+    let(:binary_name) { 'hhvm' }
+    let(:binary_version) { '3.6.1' }
+
+    it 'builds the specified binary, tars it, and places it in your current working directory' do
+      binary_tarball_location = File.join(Dir.pwd, 'hhvm-3.6.1-linux-x64.tgz')
+      expect(File).to exist(binary_tarball_location)
+
+      hhvm_version_cmd = %q{./spec/assets/binary-exerciser.sh hhvm-3.6.1-linux-x64.tgz ./bin/hhvm -v}
+      output, status = run(hhvm_version_cmd)
+
+      expect(status).to be_success
+      expect(output).to include('3.6.1')
+      FileUtils.rm(binary_tarball_location)
+    end
+  end
 end
