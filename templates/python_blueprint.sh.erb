@@ -1,19 +1,24 @@
-#!/usr/bin/env bash
-set -e
-
 INSTALLATION_DIR=$1
-PREFIX='/app/.heroku/vendor'
+BINARY_VERSION=<%= binary_version %>
+DEST_DIR=$INSTALLATION_DIR/python-${BINARY_VERSION}
+FILENAME=Python-${BINARY_VERSION}.tgz
+TAR_URL=https://www.python.org/ftp/python/${BINARY_VERSION}/$FILENAME
+APP_DIR=/app
+PREFIX=$APP_DIR/.heroku/vendor
 
-mkdir -p /app/.heroku
-ln -s $INSTALLATION_DIR $PREFIX
+template_steps() {
 
-curl https://www.python.org/ftp/python/<%= binary_version %>/Python-<%= binary_version %>.tgz | tar xzf -
-cd Python-<%= binary_version %>
-./configure --prefix=${PREFIX} --enable-shared --with-ensurepip=no
-make -j 3 install
+  mkdir -p $APP_DIR/.heroku
+  ln -s $INSTALLATION_DIR $PREFIX
 
-# For python3 only:
-cd $INSTALLATION_DIR/bin
-if ! [ -f ./python ]; then
-  ln -s ./python3 ./python
-fi
+  ./configure --prefix=${PREFIX} --enable-shared --with-ensurepip=no
+  make -j 3 install
+
+  # For python3 only:
+  cd $INSTALLATION_DIR/bin
+  if ! [ -f ./python ]; then
+    ln -s ./python3 ./python
+  fi
+}
+
+main "$@"
