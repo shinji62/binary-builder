@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 download_verify_tar(){
-  curl $TAR_URL -s --fail -o $FILENAME
+  curl $TAR_URL -s -f --retry 3 --connect-timeout 20 --retry-delay 1 -o $FILENAME
   checksum=$(md5sum $FILENAME | awk '{print $1}')
   if [ "$checksum" != "<%= checksum_value %>" ]; then
     echo "Checksum is not matching!"
