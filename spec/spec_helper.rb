@@ -1,6 +1,7 @@
 require 'open3'
 require 'fileutils'
 require 'builder'
+require 'pry'
 
 RSpec.configure do |config|
   if RUBY_PLATFORM.include?('darwin')

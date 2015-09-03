@@ -5,9 +5,10 @@ INSTALLATION_DIR=$1
 BINARY_VERSION=v<%= binary_version %>
 NODE_DIR=$INSTALLATION_DIR/node-${BINARY_VERSION}-linux-x64
 
-curl http://nodejs.org/dist/${BINARY_VERSION}/node-${BINARY_VERSION}.tar.gz -s --fail -o - | tar xzf - 2>/dev/null
-
-cd node-${BINARY_VERSION}
+curl <%= binary_uri %> -s --fail -o node-tarball
+mkdir node-binary-directory
+tar xzf node-tarball -C node-binary-directory
+cd node-binary-directory
 
 if [[ `lsb_release -r` == *10.04* ]]; then
   ./configure --shared-openssl-libpath=/lib/ --prefix=/
