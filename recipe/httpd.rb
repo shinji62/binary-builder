@@ -7,13 +7,13 @@ class HttpdRecipe < MiniPortile
   def configure_options
     [
       '--prefix=/app/httpd' ,
-    "--with-apr=#{options[:staging_dir]}/libapr-#{options[:apr_version]}" ,
-    "--with-apr-util=#{options[:staging_dir]}/libapr-util-#{options[:apr_util_version]}" ,
-    "--enable-mpms-shared=worker event" ,
-    "--enable-mods-shared=reallyall" ,
-    "--disable-isapi" ,
-    "--disable-dav" ,
-    "--disable-dialup"
+      "--with-apr=#{@staging_dir}/libapr-#{@apr_version}" ,
+      "--with-apr-util=#{@staging_dir}/libapr-util-#{@apr_util_version}" ,
+      "--enable-mpms-shared=worker event" ,
+      "--enable-mods-shared=reallyall" ,
+      "--disable-isapi" ,
+      "--disable-dav" ,
+      "--disable-dialup"
     ]
   end
 
@@ -21,26 +21,26 @@ class HttpdRecipe < MiniPortile
     execute('compile', [make_cmd, "prefix=/tmp/httpd"])
   end
 
-  def initialize
+  def initialize name, version
     super
-    options[:staging_dir] = "/tmp/staged/app"
-    options[:apr_iconv_version] = '1.2.1'
-    options[:apr_util_version] = '1.5.4'
-    options[:apr_version] = '1.5.2'
+    @apr_version = '1.5.2'
+    @staging_dir = "/tmp/staged/app"
+    @apr_iconv_version = '1.2.1'
+    @apr_util_version = '1.5.4'
   end
 
   def cook
+    httpd_apr_recipe = HttpdAprRecipe.new('apr', @apr_version, @staging_dir)
+    Bundler.with_clean_env { httpd_apr_recipe.cook }
+
+    httpd_iconv_recipe = HttpdIconvRecipe.new('iconv', @apr_iconv_version, @staging_dir, @apr_version)
+    Bundler.with_clean_env { httpd_iconv_recipe.cook }
     super
-    HttpdAprRecipe.new('apr', options[:apr_version], options).cook
-    HttpdIconvRecipe.new('iconv', options[:apr_iconv_version], options).cook
   end
 
   def url
-    "https://archive.apache.org/dist/httpd//httpd-#{version}.tar.bz2"
+    "https://archive.apache.org/dist/httpd/httpd-#{version}.tar.bz2"
   end
 
-  def configure
-    execute('configure', %w(python configure) + computed_options)
-  end
 end
 

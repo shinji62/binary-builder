@@ -5,13 +5,17 @@ class HttpdIconvRecipe < MiniPortile
 
   def configure_options
     [
-      "--prefix=#{options[:staging_dir]}/libapr-iconv-#{version}",
-      "--with-apr=#{options[:staging_dir]}/libapr-#{options[:apr_version]}/bin/apr-1-config"
+      "--prefix=#{@staging_dir}/libapr-iconv-#{version}",
+      "--with-apr=#{@staging_dir}/libapr-#{@apr_version}/bin/apr-1-config"
     ]
   end
 
-  def url
-    "http://apache.mirrors.tds.net/apr/apr-iconv-#{version}.tar.gz"
+
+  def initialize name, version, staging_dir, apr_version
+    super name, version, {}
+    @staging_dir = staging_dir
+    @apr_version = apr_version
+    @files = [{ url: "http://apache.mirrors.tds.net/apr/apr-iconv-#{version}.tar.gz" }]
   end
 end
 
