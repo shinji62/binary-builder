@@ -45,6 +45,7 @@ recipe  = nil
 case options[:binary_name]
 when "ruby"
  recipe = RubyRecipe.new('ruby', options[:binary_version])
+ binding.pry
 when "node"
  recipe = NodeRecipe.new('node', options[:binary_version])
 end
