@@ -5,11 +5,13 @@ class HttpdIconvRecipe < MiniPortile
 
   def configure_options
     [
-      "--prefix=#{@staging_dir}/libapr-iconv-#{version}",
       "--with-apr=#{@staging_dir}/libapr-#{@apr_version}/bin/apr-1-config"
     ]
   end
 
+  def port_path
+    "#{@staging_dir}/libapr-iconv-#{version}"
+  end
 
   def initialize name, version, staging_dir, apr_version
     super name, version, {}

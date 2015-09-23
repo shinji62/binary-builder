@@ -1,13 +1,10 @@
 require 'mini_portile'
 
 class HttpdAprRecipe < MiniPortile
-  def configure_options
-    [
-      "--prefix=#{@staging_dir}/libapr-#{version}"
-    ]
+
+  def port_path
+    "#{@staging_dir}/libapr-#{version}"
   end
-
-
 
   def initialize name, version, staging_dir
     super name, version, {}
