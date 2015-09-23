@@ -9,6 +9,10 @@ class HttpdIconvRecipe < MiniPortile
     ]
   end
 
+  def tmp_path
+    "/tmp/#{@host}/ports/#{@name}/#{@version}"
+  end
+
   def port_path
     "#{@staging_dir}/libapr-iconv-#{version}"
   end

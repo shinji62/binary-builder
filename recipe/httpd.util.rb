@@ -3,7 +3,7 @@ require_relative './httpd.rb'
 
 class HttpdUtilRecipe < MiniPortile
 
-  def configure_option
+  def configure_options
     [
       "--with-apr=#{@staging_dir}/libapr-#{@apr_version}",
       "--with-iconv=#{@staging_dir}/libapr-iconv-#{@apr_iconv_version}",
@@ -18,6 +18,10 @@ class HttpdUtilRecipe < MiniPortile
 
   def port_path
     "#{@staging_dir}/libapr-util-#{version}"
+  end
+
+  def tmp_path
+    "/tmp/#{@host}/ports/#{@name}/#{@version}"
   end
 
 
