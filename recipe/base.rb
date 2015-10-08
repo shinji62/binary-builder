@@ -36,12 +36,5 @@ class BaseRecipe < MiniPortile
   def archive_path_name
     ""
   end
-
-  private
-
-  # NOTE: https://www.virtualbox.org/ticket/10085
-  def tmp_path
-    "/tmp/#{@host}/ports/#{@name}/#{@version}"
-  end
 end
 
