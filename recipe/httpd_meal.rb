@@ -4,6 +4,9 @@ class AprRecipe < BaseRecipe
   def url
     "http://apache.mirrors.tds.net/apr/apr-#{version}.tar.gz"
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class AprIconvRecipe < BaseRecipe
@@ -16,6 +19,9 @@ class AprIconvRecipe < BaseRecipe
   def url
     "http://apache.mirrors.tds.net/apr/apr-iconv-#{version}.tar.gz"
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class AprUtilRecipe < BaseRecipe
@@ -35,6 +41,9 @@ class AprUtilRecipe < BaseRecipe
   def url
     "http://apache.mirrors.tds.net/apr/apr-util-#{version}.tar.gz"
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class HTTPdRecipe < BaseRecipe
@@ -53,8 +62,11 @@ class HTTPdRecipe < BaseRecipe
 
   def install
     return if installed?
-    execute('install', [make_cmd, 'install', "prefix=#{path}"])
+    execute('install', [make_cmd, 'install', "prefix=#{path}", "INSTALL_TARGETS='install-conf install-error install-icons install-other install-cgi install-include install-suexec install-build'"])
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 
   def url
     "https://archive.apache.org/dist/httpd/httpd-#{version}.tar.bz2"

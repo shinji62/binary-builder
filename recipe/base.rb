@@ -43,5 +43,16 @@ class BaseRecipe < MiniPortile
   def tmp_path
     "/tmp/#{@host}/ports/#{@name}/#{@version}"
   end
+
+  def self.faketime(method_name)
+    alias_method "#{method_name}_faketime", method_name
+    define_method(method_name) do
+      ENV['FAKETIME']   = '2014-01-01 00:00:00'
+      ENV['LD_PRELOAD'] = '/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1'
+      send("#{method_name}_faketime")
+      ENV['FAKETIME']   = nil
+      ENV['LD_PRELOAD'] = nil
+    end
+  end
 end
 

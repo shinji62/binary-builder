@@ -18,11 +18,23 @@ class JRubyRecipe < BaseRecipe
     download unless downloaded?
     extract
     compile
+    install
   end
 
   def compile
-    execute('compile', ['mvn', "-Djruby.default.ruby.version=#{ruby_version}"])
+    execute('compile', ['mvn', "dependency:resolve"])
+    execute('compile', ['mvn', "dependency:resolve-plugins"])
   end
+
+  def install
+    execute('install', [
+      "env",
+      'JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/',
+      "ANT_HOME=/binary-builder/ports/x86_64-linux-gnu/ant/1.9.6/bin/",
+      "mvn", "-Djruby.default.ruby.version=#{ruby_version}", "-o"
+    ])
+  end
+  faketime :install
 
   def ruby_version
     @ruby_version ||= version.match(/.*_ruby-(\d+\.\d).*/)[1]

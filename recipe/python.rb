@@ -20,6 +20,21 @@ class PythonRecipe < BaseRecipe
     end
   end
 
+  def configure
+    return if configured?
+
+    md5_file = File.join(tmp_path, 'configure.md5')
+    digest   = Digest::MD5.hexdigest(computed_options.to_s)
+    File.open(md5_file, "w") { |f| f.write digest }
+
+    execute('configure', ['bash','-c',"sed -i -e '2993s/-E/-B -R/' configure"])
+    execute('configure', %w(sh configure) + computed_options)
+  end
+
+  faketime :install
+  faketime :compile
+  faketime :configure
+
   def url
     "https://www.python.org/ftp/python/#{version}/Python-#{version}.tgz"
   end
@@ -28,4 +43,3 @@ class PythonRecipe < BaseRecipe
     '/app/.heroku/vendor'
   end
 end
-

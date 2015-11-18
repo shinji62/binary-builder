@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '1.9.3'
 
-gem 'mini_portile', git: 'https://github.com/jtarchie/mini_portile'
+gem 'mini_portile', path: 'mini_portile' #git: 'https://github.com/jtarchie/mini_portile'
 
 group :test do
   gem 'rspec'

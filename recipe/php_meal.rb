@@ -2,6 +2,9 @@ class RabbitMQRecipe < BaseRecipe
   def url
     "https://github.com/alanxz/rabbitmq-c/releases/download/v#{version}/rabbitmq-c-#{version}.tar.gz"
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class PeclRecipe < BaseRecipe
@@ -25,6 +28,9 @@ class PeclRecipe < BaseRecipe
     execute('configure', 'phpize')
     execute('configure', %w(sh configure) + computed_options)
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class LuaRecipe < BaseRecipe
@@ -44,6 +50,9 @@ class LuaRecipe < BaseRecipe
 
     execute('install', ['bash', '-c', "#{make_cmd} install INSTALL_TOP=#{self.path}"])
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class IonCubeRecipe < BaseRecipe
@@ -59,6 +68,9 @@ class IonCubeRecipe < BaseRecipe
   def path
     work_path
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class HiredisRecipe < BaseRecipe
@@ -74,6 +86,9 @@ class HiredisRecipe < BaseRecipe
 
     execute('install', ['bash', '-c', "LIBRARY_PATH=lib PREFIX='#{path}' #{make_cmd} install"])
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 end
 
 class PHPIRedisRecipe < PeclRecipe
@@ -282,6 +297,9 @@ class PhpRecipe < BaseRecipe
     #LIBS=-lz enables using zlib when configuring
     execute('configure',["bash","-c","LIBS=-lz ./configure #{computed_options.join ' '}"])
   end
+  faketime :install
+  faketime :configure
+  faketime :compile
 
   def major_version
     @major_version ||= self.version.match(/^(\d+\.\d+)/)[1]
