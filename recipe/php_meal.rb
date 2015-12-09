@@ -137,7 +137,6 @@ class MemcachedPeclRecipe < PeclRecipe
       "--with-php-config=#{@php_path}/bin/php-config",
       "--disable-memcached-sasl",
       "--enable-memcached-msgpack",
-      "--enable-memcached-igbinary",
       "--enable-memcached-json"
     ]
   end
@@ -256,7 +255,7 @@ class PhpRecipe < BaseRecipe
       "--with-openssl=shared",
       "--enable-fpm",
       "--enable-pcntl=shared",
-      "--with-readline=shared"
+      "--enable-intl"
     ]
   end
 
@@ -299,7 +298,6 @@ class PhpRecipe < BaseRecipe
     system <<-eof
       cp #{@rabbitmq_path}/lib/librabbitmq.so.1 #{self.path}/lib/
       cp #{@hiredis_path}/lib/libhiredis.so.0.10 #{self.path}/lib/
-      cp #{@ioncube_path}/ioncube_loader_lin_#{major_version}.so #{zts_path}/ioncube.so
       cp /usr/lib/libc-client.so.2007e #{self.path}/lib/
       cp /usr/lib/libmcrypt.so.4 #{self.path}/lib
       cp /usr/lib/libaspell.so.15 #{self.path}/lib
@@ -307,11 +305,11 @@ class PhpRecipe < BaseRecipe
       cp /usr/lib/x86_64-linux-gnu/libmemcached.so.10 #{self.path}/lib
 
       # Remove unused files
-      rm "#{self.path}/etc/php-fpm.conf.default"
+      rm -rf "#{self.path}/etc/php-fpm.conf.default"
       rm -rf "#{self.path}/include"
       rm -rf "#{self.path}/php"
       rm -rf "#{self.path}/lib/php/build"
-      rm "#{self.path}/bin/php-cgi"
+      rm -rf "#{self.path}/bin/php-cgi"
       find "#{self.path}/lib/php/extensions" -name "*.a" -type f -delete
     eof
   end
@@ -362,32 +360,22 @@ class PhpMeal
     php_recipe.cook
     php_recipe.activate
 
-    standard_pecl('intl', '3.0.0', 'a6029b9e7b1d0fcdb6e8bfad49e59ae9')
-    standard_pecl('igbinary', '1.2.1', '04a2474ff5eb99c7d0007bf9f4e8a6ec')
-    standard_pecl('imagick', '3.1.2', 'f2fd71b026debe056e0ec8d76c2ffe94')
-    standard_pecl('mailparse', '2.1.6', '0f84e1da1d074a4915a9bcfe2319ce84')
-    standard_pecl('memcache', '2.2.7', '171e3f51a9afe18b76348ddf1c952141')
-    standard_pecl('mongo', '1.6.5', '058b5d76c95e1b12267cf1b449118acc')
-    standard_pecl('msgpack', '0.5.5', 'adc8d9ea5088bdb83e7cc7c2f535d858')
-    standard_pecl('protocolbuffers', '0.2.6', 'a304ca632b0d7c5710d5590ac06248a9')
-    standard_pecl('redis', '2.2.7', 'c55839465b2c435fd091ac50923f2d96')
-    standard_pecl('sundown', '0.3.11', 'c1397e9d3312226ec6c84e8e34c717a6')
-    standard_pecl('xdebug', '2.3.1', '117d8e54d84b1cb7e07a646377007bd5')
-    standard_pecl('yaf', '2.3.3', '942dc4109ad965fa7f09fddfc784f335')
+    standard_pecl('msgpack', '2.0.0', 'fc50b1706abf9936dfbbd62f92c13b83')
+    standard_pecl('yaf', '3.0.0', '213fd676e0724a7a76ff9fb309243ee9')
 
     rabbitmq_recipe.cook
     amqppecl_recipe.cook
     lua_recipe.cook
     luapecl_recipe.cook
     hiredis_recipe.cook
-    phpiredis_recipe.cook
-    phpprotobufpecl_recipe.cook
-    phalconpecl_recipe.cook
-    suhosinpecl_recipe.cook
-    twigpecl_recipe.cook
-    xcachepecl_recipe.cook
-    xhprofpecl_recipe.cook
-    memcachedpecl_recipe.cook
+    #phpiredis_recipe.cook
+    #phpprotobufpecl_recipe.cook
+    #phalconpecl_recipe.cook
+    #suhosinpecl_recipe.cook
+    #twigpecl_recipe.cook
+    #xcachepecl_recipe.cook
+    #xhprofpecl_recipe.cook
+    #memcachedpecl_recipe.cook
     snmp_recipe.cook
   end
 
@@ -414,20 +402,21 @@ class PhpMeal
   private
 
   def files_hashs
-    rabbitmq_recipe.send(:files_hashs) +
-    amqppecl_recipe.send(:files_hashs) +
-    lua_recipe.send(:files_hashs) +
-    luapecl_recipe.send(:files_hashs) +
-    hiredis_recipe.send(:files_hashs) +
-    phpiredis_recipe.send(:files_hashs) +
-    phpprotobufpecl_recipe.send(:files_hashs) +
-    phalconpecl_recipe.send(:files_hashs) +
-    suhosinpecl_recipe.send(:files_hashs) +
-    twigpecl_recipe.send(:files_hashs) +
-    xcachepecl_recipe.send(:files_hashs) +
-    xhprofpecl_recipe.send(:files_hashs) +
-    memcachedpecl_recipe.send(:files_hashs) +
-    @pecl_recipes.collect{|r| r.send(:files_hashs) }.flatten
+    []
+    # rabbitmq_recipe.send(:files_hashs) +
+    # amqppecl_recipe.send(:files_hashs) +
+    # lua_recipe.send(:files_hashs) +
+    # luapecl_recipe.send(:files_hashs) +
+    # hiredis_recipe.send(:files_hashs) +
+    # phpiredis_recipe.send(:files_hashs) +
+    # phpprotobufpecl_recipe.send(:files_hashs) +
+    # phalconpecl_recipe.send(:files_hashs) +
+    # suhosinpecl_recipe.send(:files_hashs) +
+    # twigpecl_recipe.send(:files_hashs) +g
+    # xcachepecl_recipe.send(:files_hashs) +
+    # xhprofpecl_recipe.send(:files_hashs) +
+    # memcachedpecl_recipe.send(:files_hashs) +
+    # @pecl_recipes.collect{|r| r.send(:files_hashs) }.flatten
   end
 
   def standard_pecl(name, version, md5)
@@ -471,16 +460,16 @@ class PhpMeal
   end
 
   def luapecl_recipe
-    @luapecl_recipe ||= LuaPeclRecipe.new('lua', '1.1.0', {
-      md5: '58bd532957473f2ac87f1032c4aa12b5',
+    @luapecl_recipe ||= LuaPeclRecipe.new('lua', '2.0.0', {
+      md5: '994a2b348a4d7e04010d37446287e258',
       php_path: php_recipe.path,
       lua_path: lua_recipe.path
     })
   end
 
   def amqppecl_recipe
-    @amqppecl_recipe ||= AmqpPeclRecipe.new('amqp', '1.4.0', {
-      md5: 'e7fefbd5c87eaad40c29e2ad5de7bd30',
+    @amqppecl_recipe ||= AmqpPeclRecipe.new('amqp', '1.7.0alpha1', {
+      md5: '771a4b54de78b49248ca5cbb69693b38',
       php_path: php_recipe.path,
       rabbitmq_path: rabbitmq_recipe.path
     })
