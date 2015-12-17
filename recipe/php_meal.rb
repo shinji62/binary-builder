@@ -46,6 +46,33 @@ class LuaRecipe < BaseRecipe
   end
 end
 
+
+class OracleInstantClientRecipe < BaseRecipe
+  def url
+    "http://gwenn-static.cfapps.io/instantclient-gwenn.x64-#{version}.tar.gz"
+  end
+
+  def configure
+  end
+
+  def compile
+  end
+
+  def install
+    execute('install', ['cp','libocci.so.12.1','libocci.so'])
+    execute('install', ['cp' ,'libclntshcore.so.12.1','libclntshcore.so'])
+    execute('install', ['cp' ,'libclntsh.so.12.1','libclntsh.so'])
+  end
+
+
+  def path
+    work_path
+  end
+
+
+end
+
+
 class IonCubeRecipe < BaseRecipe
   # NOTE: not a versioned URL, will always be the lastest support version
   def url
@@ -107,6 +134,17 @@ class LuaPeclRecipe < PeclRecipe
     ]
   end
 end
+
+
+class OracleOCIPeclRecipe < PeclRecipe
+  def configure_options
+    [
+      "--with-php-config=#{@php_path}/bin/php-config",
+      "--with-oci8=shared,instantclient,#{@oracleinstantclient_path}",
+    ]
+  end
+end
+
 
 class PHPProtobufPeclRecipe < PeclRecipe
   def url
@@ -259,7 +297,7 @@ class PhpRecipe < BaseRecipe
       "--with-readline=shared"
     ]
   end
-
+  def compile;end
   def url
     "https://php.net/distributions/php-#{version}.tar.gz"
   end
@@ -300,6 +338,7 @@ class PhpRecipe < BaseRecipe
       cp #{@rabbitmq_path}/lib/librabbitmq.so.1 #{self.path}/lib/
       cp #{@hiredis_path}/lib/libhiredis.so.0.10 #{self.path}/lib/
       cp #{@ioncube_path}/ioncube_loader_lin_#{major_version}.so #{zts_path}/ioncube.so
+      cp #{@oracleinstantclient_path}/* #{self.path}/lib/
       cp /usr/lib/libc-client.so.2007e #{self.path}/lib/
       cp /usr/lib/libmcrypt.so.4 #{self.path}/lib
       cp /usr/lib/libaspell.so.15 #{self.path}/lib
@@ -375,6 +414,8 @@ class PhpMeal
     standard_pecl('xdebug', '2.3.1', '117d8e54d84b1cb7e07a646377007bd5')
     standard_pecl('yaf', '2.3.3', '942dc4109ad965fa7f09fddfc784f335')
 
+    oracleinstantclient_recipe.cook
+    oracleocipecl_recipe.cook
     rabbitmq_recipe.cook
     amqppecl_recipe.cook
     lua_recipe.cook
@@ -417,6 +458,8 @@ class PhpMeal
     rabbitmq_recipe.send(:files_hashs) +
     amqppecl_recipe.send(:files_hashs) +
     lua_recipe.send(:files_hashs) +
+    oracleinstantclient_recipe.send(:files_hashs) +
+    oracleocipecl_recipe.send(:files_hashs) +
     luapecl_recipe.send(:files_hashs) +
     hiredis_recipe.send(:files_hashs) +
     phpiredis_recipe.send(:files_hashs) +
@@ -454,7 +497,8 @@ class PhpMeal
     @php_recipe ||= PhpRecipe.new(@name, @version, {
       rabbitmq_path: rabbitmq_recipe.path,
       hiredis_path: hiredis_recipe.path,
-      ioncube_path: ioncube_recipe.path
+      ioncube_path: ioncube_recipe.path,
+      oracleinstantclient_path: oracleinstantclient_recipe.path
     }.merge(DetermineChecksum.new(@options).to_h))
   end
 
@@ -469,6 +513,13 @@ class PhpMeal
       md5: '913fdb32207046b273fdb17aad70be13'
     })
   end
+
+  def oracleinstantclient_recipe
+  @oracleinstantclient_recipe ||= OracleInstantClientRecipe.new('oracleInstantClient',
+    '12.1.0.2.0', {
+      md5: 'e6f2cb2120b763f0cfe3f252d65b169c'
+    })
+   end
 
   def luapecl_recipe
     @luapecl_recipe ||= LuaPeclRecipe.new('lua', '1.1.0', {
@@ -547,6 +598,18 @@ class PhpMeal
       php_path: php_recipe.path
     })
   end
+
+
+  def oracleocipecl_recipe
+    @oracleocipecl_recipe ||= OracleOCIPeclRecipe.new('oci8', '2.0.10', {
+      md5: '57b493709b177f475eec19d80d6b47cc',
+      php_path: php_recipe.path,
+      php_version: php_recipe.version,
+      oracleinstantclient_path: oracleinstantclient_recipe.path,
+    })
+  end
+
+
 end
 
 
