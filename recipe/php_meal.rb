@@ -135,17 +135,6 @@ class LuaPeclRecipe < PeclRecipe
   end
 end
 
-
-class OracleOCIPeclRecipe < PeclRecipe
-  def configure_options
-    [
-      "--with-php-config=#{@php_path}/bin/php-config",
-      "--with-oci8=shared,instantclient,#{@oracleinstantclient_path}",
-    ]
-  end
-end
-
-
 class PHPProtobufPeclRecipe < PeclRecipe
   def url
     "https://github.com/allegro/php-protobuf/archive/#{version}.tar.gz"
@@ -283,8 +272,7 @@ class PhpRecipe < BaseRecipe
       "--with-gmp=shared",
       "--with-imap=shared",
       "--with-imap-ssl=shared",
-      "--with-ldap=shared",
-      "--with-ldap-sasl",
+      "--with-ldap=shared,#{@oracleinstantclient_path}",
       "--with-zlib=shared",
       "--with-xsl=shared",
       "--with-snmp=shared",
@@ -294,10 +282,12 @@ class PhpRecipe < BaseRecipe
       "--with-openssl=shared",
       "--enable-fpm",
       "--enable-pcntl=shared",
-      "--with-readline=shared"
+      "--with-readline=shared",
+      "--with-oci8=shared,instantclient,#{@oracleinstantclient_path}",
+      "--with-pdo-oci=shared,instantclient,#{@oracleinstantclient_path},12.1",
     ]
   end
-  def compile;end
+
   def url
     "https://php.net/distributions/php-#{version}.tar.gz"
   end
@@ -338,7 +328,7 @@ class PhpRecipe < BaseRecipe
       cp #{@rabbitmq_path}/lib/librabbitmq.so.1 #{self.path}/lib/
       cp #{@hiredis_path}/lib/libhiredis.so.0.10 #{self.path}/lib/
       cp #{@ioncube_path}/ioncube_loader_lin_#{major_version}.so #{zts_path}/ioncube.so
-      cp #{@oracleinstantclient_path}/* #{self.path}/lib/
+      cp #{@oracleinstantclient_path}/*so* #{self.path}/lib/
       cp /usr/lib/libc-client.so.2007e #{self.path}/lib/
       cp /usr/lib/libmcrypt.so.4 #{self.path}/lib
       cp /usr/lib/libaspell.so.15 #{self.path}/lib
@@ -346,6 +336,7 @@ class PhpRecipe < BaseRecipe
       cp /usr/lib/x86_64-linux-gnu/libmemcached.so.10 #{self.path}/lib
 
       # Remove unused files
+      rm -rf #{self.path}/sdk
       rm "#{self.path}/etc/php-fpm.conf.default"
       rm -rf "#{self.path}/include"
       rm -rf "#{self.path}/php"
@@ -397,6 +388,7 @@ class PhpMeal
     eof
 
     ioncube_recipe.cook
+    oracleinstantclient_recipe.cook
 
     php_recipe.cook
     php_recipe.activate
@@ -414,8 +406,7 @@ class PhpMeal
     standard_pecl('xdebug', '2.3.1', '117d8e54d84b1cb7e07a646377007bd5')
     standard_pecl('yaf', '2.3.3', '942dc4109ad965fa7f09fddfc784f335')
 
-    oracleinstantclient_recipe.cook
-    oracleocipecl_recipe.cook
+
     rabbitmq_recipe.cook
     amqppecl_recipe.cook
     lua_recipe.cook
@@ -459,7 +450,6 @@ class PhpMeal
     amqppecl_recipe.send(:files_hashs) +
     lua_recipe.send(:files_hashs) +
     oracleinstantclient_recipe.send(:files_hashs) +
-    oracleocipecl_recipe.send(:files_hashs) +
     luapecl_recipe.send(:files_hashs) +
     hiredis_recipe.send(:files_hashs) +
     phpiredis_recipe.send(:files_hashs) +
@@ -599,15 +589,6 @@ class PhpMeal
     })
   end
 
-
-  def oracleocipecl_recipe
-    @oracleocipecl_recipe ||= OracleOCIPeclRecipe.new('oci8', '2.0.10', {
-      md5: '57b493709b177f475eec19d80d6b47cc',
-      php_path: php_recipe.path,
-      php_version: php_recipe.version,
-      oracleinstantclient_path: oracleinstantclient_recipe.path,
-    })
-  end
 
 
 end
