@@ -142,7 +142,7 @@ class OraclePeclRecipe < PeclRecipe
       cp -an /oracle/libipc1.so #{@php_path}/lib
       cp -an /oracle/libmql1.so #{@php_path}/lib
       cp -an /oracle/libnnz12.so #{@php_path}/lib
-      cp -an /oracle/libociicus.so #{@php_path}/lib
+      cp -an /oracle/libocci.so #{@php_path}/lib
       cp -an /oracle/libons.so #{@php_path}/lib
     eof
   end

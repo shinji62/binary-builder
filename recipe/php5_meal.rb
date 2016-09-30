@@ -203,7 +203,7 @@ class Php5Meal
 
     if OraclePeclRecipe.oracle_sdk?
       system 'ln -s /oracle/libclntsh.so.* /oracle/libclntsh.so'
-
+      system 'ln -s /oracle/libocci.so.* /oracle/libocci.so'
       oracle_recipe.cook
       oracle_pdo_recipe.cook
     end
