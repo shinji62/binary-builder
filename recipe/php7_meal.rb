@@ -164,10 +164,11 @@ class Php7Meal
     librdkafka_recipe.cook
 
     # php extensions
-    standard_pecl('cassandra', '1.2.1', 'dca2cda61a1ff6a6cecb94f88a75c757')
+    standard_pecl('apcu', '5.1.7', '7803b58fab6ecfe847ef5b9be6825dea')
+    standard_pecl('cassandra', '1.2.2', '2226a4d66f8e0a4de85656f10472afc5')
     standard_pecl('imagick', '3.4.2', '3f80e35c2434636cdb5df01b221b3ffa')
     standard_pecl('mailparse', '3.0.1', '5ae0643a11159414c7e790c73a9e25ec')
-    standard_pecl('mongodb', '1.1.8', '94f0f8d551f5ca440420aa3db0054dd8')
+    standard_pecl('mongodb', '1.1.9', '0644ad0451e5913cbac22e3456ba239b')
     standard_pecl('msgpack', '2.0.1', '4d1db4592ffa4101601aefc794191de5')
     standard_pecl('rdkafka', '2.0.0', '87bce41f61818fd7bc442f71d4c28cde')
     standard_pecl('redis', '3.0.0', '1b90e954afc1f9993cc0552d0f1d1daa')

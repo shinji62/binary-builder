@@ -24,7 +24,7 @@ end
 
 class LibRdKafkaRecipe < BaseRecipe
   def url
-    "https://github.com/edenhill/librdkafka/archive/#{version}.tar.gz"
+    "https://github.com/edenhill/librdkafka/archive/v#{version}.tar.gz"
   end
 
   def work_path
@@ -357,11 +357,11 @@ def rabbitmq_recipe
 end
 
 def librdkafka_recipe
-  LibRdKafkaRecipe.new('librdkafka', '0.9.1', md5: 'feb25faed02815f60ff363b2f40ba1b9')
+  LibRdKafkaRecipe.new('librdkafka', '0.9.2', md5: 'f2cc5ca6a149928c3cb34398379a5024')
 end
 
 def install_cassandra_dependencies
-  cassandra_version = "2.4.3"
+  cassandra_version = "2.5.0"
   system <<-eof
     wget http://downloads.datastax.com/cpp-driver/ubuntu/14.04/dependencies/libuv/v1.8.0/libuv_1.8.0-1_amd64.deb
     wget http://downloads.datastax.com/cpp-driver/ubuntu/14.04/dependencies/libuv/v1.8.0/libuv-dev_1.8.0-1_amd64.deb
